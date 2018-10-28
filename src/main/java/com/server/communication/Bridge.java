@@ -1,5 +1,6 @@
 package com.server.communication;
 
+import com.common.TestCommand;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -27,10 +28,8 @@ public class Bridge {
             ObjectInputStream ois = new ObjectInputStream(in);
             Object toWrite = ois.readObject();
             return toWrite;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Connection troubles");
         }
         return null;
     }

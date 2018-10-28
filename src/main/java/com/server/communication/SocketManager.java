@@ -12,6 +12,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Component
 public class SocketManager {
@@ -20,8 +21,8 @@ public class SocketManager {
     ArrayList<ServerSocket> sockets = new ArrayList<>();
     ArrayList<Socket> socketsClient = new ArrayList<>();
 
-    Queue<Message> messagesReceive;
-    Queue<Message> messagesSend;
+    Queue<Message> messagesReceive=new LinkedBlockingQueue<>();
+    Queue<Message> messagesSend=new LinkedBlockingQueue<>();
 
     @Autowired
     Bridge bridge;
@@ -84,14 +85,24 @@ public class SocketManager {
     public void listener(Socket clientSocket){
 
             while(true) {
-                messagesReceive.add((TestCommand) bridge.receive(clientSocket));
+                try {
+                    messagesReceive.add((TestCommand) bridge.receive(clientSocket));
+                }catch (Exception e){
+                    messagesReceive.add(new TestCommand(clientSocket.getLocalSocketAddress().toString(), " disconnected"));
+                    break;
+                }
             }
 
     }
 
-    public void setMessages(Queue<Message> messagesReceive,Queue<Message> messagesSend ) {
-        this.messagesReceive = messagesReceive;
-        this.messagesSend = messagesSend;
+    public void send(Message message){
+        messagesSend.add(message);
+    }
+
+    public Message receive(){
+        while(true){
+            if(!messagesReceive.isEmpty()) return messagesReceive.poll();
+        }
     }
 
 
