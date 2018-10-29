@@ -2,7 +2,6 @@ package com.server.communication;
 
 import com.common.Message;
 import com.common.Port;
-import com.common.TestCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,9 +9,7 @@ import javax.annotation.PostConstruct;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.*;
 
 @Component
 public class SocketManager {
@@ -20,9 +17,8 @@ public class SocketManager {
     ServerSocket server;
     ArrayList<ServerSocket> sockets = new ArrayList<>();
     ArrayList<Socket> socketsClient = new ArrayList<>();
+    int clientcounter=0, messagecounter=0;
 
-    Queue<Message> messagesReceive=new LinkedBlockingQueue<>();
-    Queue<Message> messagesSend=new LinkedBlockingQueue<>();
 
     @Autowired
     Bridge bridge;
@@ -35,7 +31,6 @@ public class SocketManager {
         }
         connect();
         listenStart();
-        sender();
     }
 
     public void connect(){
@@ -60,7 +55,6 @@ public class SocketManager {
                 try {
                     Socket client=socket.accept();
                     socketsClient.add(client);
-                    listener(client);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -68,42 +62,47 @@ public class SocketManager {
         }
     }
 
-    public void sender(){
-        new Thread(()->{
-            while(true){
-                if(!messagesSend.isEmpty()){
-                    for (Socket socket:
-                         socketsClient) {
-                        bridge.send(socket, messagesSend.peek());
-                    }
-                    messagesSend.poll();
-                }
-            }
-        });
+
+
+    public void send(Message message, int client){
+        bridge.send(socketsClient.get(client), message);
     }
 
-    public void listener(Socket clientSocket){
-
-            while(true) {
-                try {
-                    messagesReceive.add((TestCommand) bridge.receive(clientSocket));
-                }catch (Exception e){
-                    messagesReceive.add(new TestCommand(clientSocket.getLocalSocketAddress().toString(), " disconnected"));
-                    break;
-                }
-            }
-
+    public Message receive(int client){
+        return (Message)bridge.receive(socketsClient.get(client));
     }
 
-    public void send(Message message){
-        messagesSend.add(message);
-    }
-
-    public Message receive(){
-        while(true){
-            if(!messagesReceive.isEmpty()) return messagesReceive.poll();
+    public void multipleSend(Message message){
+        for (Socket s:
+             socketsClient) {
+            bridge.send(s, message);
         }
     }
 
+    public ArrayList<Message> mupltipleReceive(){
+        messagecounter=0;
+        ArrayList<Message> buf=new ArrayList<>();
+        for (Socket s:
+             socketsClient) {
+            buf.add(new Message());
+        }
+        for(clientcounter=0;clientcounter<getClientNumber(); clientcounter++) {
+            new Thread(()->{
+                buf.add(clientcounter-1,receive(clientcounter-1));
+                messagecounter++;
+            }).start();
+        }
+        while(!read());
+        return buf;
+    }
+
+
+    public int getClientNumber(){
+        return socketsClient.size();
+    }
+
+    public boolean read(){
+        return messagecounter==clientcounter;
+    }
 
 }

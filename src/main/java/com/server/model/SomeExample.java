@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.ArrayList;
 
 @Service
 public class SomeExample {
@@ -16,16 +15,29 @@ public class SomeExample {
 
 
 
+
     @PostConstruct
-    public void init(){
+    public void init() throws InterruptedException {
         printer();
     }
 
     public void printer(){
         new Thread(()->{
-            while(true){
-                socketManager.receive().print();
+            try {
+                Thread.sleep(50000);
+                System.out.println("Sleep stop");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            System.out.println(socketManager.getClientNumber());
+
+            ArrayList<Message> buf=socketManager.mupltipleReceive();
+
+            for (Message m:
+                 buf) {
+                socketManager.multipleSend(m);
+            }
+
         }).start();
     }
 }
