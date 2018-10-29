@@ -15,51 +15,33 @@ import java.util.*;
 public class SocketManager {
     static int port=10000;
     ServerSocket server;
-    ArrayList<ServerSocket> sockets = new ArrayList<>();
     ArrayList<Socket> socketsClient = new ArrayList<>();
     int clientcounter=0, messagecounter=0;
-
+    int playersMustBe=6;
 
     @Autowired
     Bridge bridge;
 
+
     @PostConstruct
     public void init() throws IOException {
         server=new ServerSocket(port);
-        for(int i=0;i<6;i++){
-            sockets.add(new ServerSocket(port+i+1));
-        }
         connect();
-        listenStart();
     }
 
     public void connect(){
         new Thread(()->{
             Socket client;
-            for(int i=0; i<6; i++){
+            for(int i=0; i<playersMustBe; i++){
                 try {
                     client=server.accept();
-                    bridge.send(client, new Port(port+i+1));
+                    socketsClient.add(client);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
 
-    }
-
-    public void listenStart(){
-        for (ServerSocket socket:
-             sockets) {
-            new Thread(()->{
-                try {
-                    Socket client=socket.accept();
-                    socketsClient.add(client);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).start();
-        }
     }
 
 
@@ -92,7 +74,13 @@ public class SocketManager {
                 messagecounter++;
             }).start();
         }
-        while(!read());
+        while(!read()){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        };
         return buf;
     }
 
