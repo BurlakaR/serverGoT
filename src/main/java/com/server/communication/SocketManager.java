@@ -1,7 +1,7 @@
 package com.server.communication;
 
+import com.common.IntegerMessage;
 import com.common.Message;
-import com.common.Port;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,11 +13,10 @@ import java.util.*;
 
 @Component
 public class SocketManager {
-    static int port=10000;
-    ServerSocket server;
-    ArrayList<Socket> socketsClient = new ArrayList<>();
-    int clientcounter=0, messagecounter=0;
-    int playersMustBe=6;
+    static int portCreation=9998;
+    static int portConnection=9999;
+    ServerSocket serverCreation;
+    ServerSocket serverConnection;
 
     @Autowired
     Bridge bridge;
@@ -25,56 +24,66 @@ public class SocketManager {
 
     @PostConstruct
     public void init() throws IOException {
-        server=new ServerSocket(port);
-        connect();
+        serverCreation=new ServerSocket(portCreation);
+        serverConnection=new ServerSocket(portConnection);
     }
 
-    public void connect(){
-        new Thread(()->{
-            Socket client;
-            for(int i=0; i<playersMustBe; i++){
-                try {
-                    client=server.accept();
-                    socketsClient.add(client);
-                } catch (IOException e) {
+    public IntegerMessage createRoom(){
+            try{
+            Socket client=serverCreation.accept();
+                IntegerMessage buf = (IntegerMessage)receive(client);
+                buf.setSender(client);
+                return buf;
+            } catch (IOException e) {
                     e.printStackTrace();
-                }
+                    return null;
             }
-        }).start();
+
+    }
+
+    public IntegerMessage connectRoom(){
+        try{
+            Socket client=serverConnection.accept();
+            IntegerMessage buf = (IntegerMessage)receive(client);
+            buf.setSender(client);
+            return buf;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
 
     }
 
 
 
-    public void send(Message message, int client){
-        bridge.send(socketsClient.get(client), message);
+    public void send(Message message, Socket client){
+        bridge.send(client, message);
     }
 
-    public Message receive(int client){
-        return (Message)bridge.receive(socketsClient.get(client));
+    public Message receive(Socket client){
+        return (Message)bridge.receive(client);
     }
 
-    public void multipleSend(Message message){
+    public void multipleSend(Message message, ArrayList<Socket> socketsClient){
         for (Socket s:
              socketsClient) {
             bridge.send(s, message);
         }
     }
 
-    public ArrayList<Message> mupltipleReceive(){
-        messagecounter=0;
+    public ArrayList<Message> mupltipleReceive(ArrayList<Socket> socketsClient){
         ArrayList<Message> buf=new ArrayList<>();
         for (Socket s:
              socketsClient) {
             buf.add(new Message());
         }
-        for(clientcounter=0;clientcounter<getClientNumber(); clientcounter++) {
+        for(int clientcounter=0;clientcounter<socketsClient.size(); clientcounter++) {
+            final int i=clientcounter;
             new Thread(()->{
-                buf.add(clientcounter-1,receive(clientcounter-1));
-                messagecounter++;
+                buf.add(i-1,receive(socketsClient.get(i-1)));
             }).start();
         }
-        while(!read()){
+        while(!(buf.size()==socketsClient.size())){
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -85,12 +94,5 @@ public class SocketManager {
     }
 
 
-    public int getClientNumber(){
-        return socketsClient.size();
-    }
-
-    public boolean read(){
-        return messagecounter==clientcounter;
-    }
 
 }
