@@ -1,5 +1,6 @@
 package com.server.model;
 
+import com.common.IntegerMessage;
 import com.common.TestCommand;
 import com.server.communication.SocketManager;
 
@@ -28,21 +29,24 @@ public class GameRoom {
         }
     }
 
-    public void add(Socket client) {
+    public boolean add(Socket client) {
         if(socketsClient.size()<number) {
+            socketManager.send(new IntegerMessage(port), client);
             try {
                 forCLient.accept();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("Connect to Room:"+id);
             socketsClient.add(client);
+            if(socketsClient.size()==number){
+                //Play start. Maybe new Thread
+
+            }
+            return true;
         }
 
-        if(socketsClient.size()==number){
-            //Play start. Maybe new Thread
-            socketManager.multipleSend(new TestCommand("Start", " to play!"), socketsClient);
-        }
+
+        return false;
     }
 
     public int getId() {

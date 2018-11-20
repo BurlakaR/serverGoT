@@ -50,15 +50,19 @@ public class SimpleServer {
             while(true) {
                 IntegerMessage buf = socketManager.connectRoom();
                 int id=buf.getMessage();
-                System.out.println("Connect to:"+id);
+                System.out.println("Trying to connect to room:"+id);//delete this later
+                boolean flag=false;
                 for (GameRoom g:
                      gameRooms) {
                     if(id==g.getId()){
-                        socketManager.send(new IntegerMessage(g.getPort()), buf.getSender());
-                        g.add(buf.getSender());
+                        flag=g.add(buf.getSender());
                         break;
                     }
                 }
+                if(!flag){
+                    socketManager.send(new IntegerMessage(-1), buf.getSender());
+                }
+
             }
         }).start();
     }
