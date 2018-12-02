@@ -2,6 +2,7 @@ package com.server.model;
 
 import com.common.IntegerMessage;
 import com.common.TestCommand;
+import com.common.model.Game;
 import com.server.communication.SocketManager;
 
 import java.io.IOException;
@@ -16,6 +17,8 @@ public class GameRoom {
     ArrayList<Socket> socketsClient = new ArrayList<>();
     SocketManager socketManager;
     ServerSocket forCLient;
+
+    Game game;
 
     public GameRoom(int id, int number, int port, SocketManager socketManager) {
         this.id = id;
@@ -32,15 +35,17 @@ public class GameRoom {
     public boolean add(Socket client) {
         if(socketsClient.size()<number) {
             socketManager.send(new IntegerMessage(port), client);
+
             try {
-                forCLient.accept();
+                client = forCLient.accept();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             socketsClient.add(client);
             if(socketsClient.size()==number){
-                //Play start. Maybe new Thread
-
+                new Thread(()->{
+                    start();
+                }).start();
             }
             return true;
         }
@@ -55,5 +60,14 @@ public class GameRoom {
 
     public int getPort(){
         return port;
+    }
+
+    public void start(){
+        game = new Game();
+        game.setNumberOfPlayers((short)3);
+        for(int i=0; i<socketsClient.size(); i++){
+            socketManager.send(new IntegerMessage(i), socketsClient.get(i));
+        }
+        socketManager.multipleSend(game,socketsClient);
     }
 }
