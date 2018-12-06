@@ -1,4 +1,4 @@
-package com.server.communication;
+package com.communication;
 
 import com.common.IntegerMessage;
 import com.common.Message;
@@ -75,7 +75,7 @@ public class SocketManager {
         ArrayList<Message> buf=new ArrayList<>();
         for (Socket s:
              socketsClient) {
-            buf.add(new Message());
+            buf.add(new IntegerMessage(0));
         }
         for(int clientcounter=0;clientcounter<socketsClient.size(); clientcounter++) {
             final int i=clientcounter;
