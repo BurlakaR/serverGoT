@@ -2,6 +2,7 @@ package com.server.model;
 
 import com.common.Game;
 import com.common.IntegerMessage;
+import com.common.model.GameEvents.GatheringOrders;
 import com.server.communication.SocketManager;
 
 import java.io.IOException;
@@ -58,7 +59,6 @@ public class GameRoom {
             return true;
         }
 
-
         return false;
     }
 
@@ -80,6 +80,6 @@ public class GameRoom {
             System.out.println(game.getPlayer(i));
             socketManager.send(game.getPlayer(i), socketsClient.get(i));
         }
-
+        socketManager.multipleSend(new GatheringOrders(), socketsClient);
     }
 }
