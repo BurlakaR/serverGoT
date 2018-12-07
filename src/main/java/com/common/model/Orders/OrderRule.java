@@ -2,8 +2,6 @@ package com.common.model.Orders;
 
 import com.common.ClientController;
 import com.common.Game;
-import com.common.Message;
-import com.common.SocketManagerCommon;
 
 public class OrderRule extends Order {
     public OrderRule(boolean star) {
@@ -11,12 +9,11 @@ public class OrderRule extends Order {
     }
 
     @Override
-    public void executeOnClient(Game game, SocketManagerCommon socketManager, ClientController controller) {
+    public void executeOnClient(ClientController controller, Game game) {
 
     }
 
     @Override
-    public Message executeOnServer(Game game, SocketManagerCommon socketManager) {
-        return null;
+    public void executeOnServer(Game game) {
     }
 }

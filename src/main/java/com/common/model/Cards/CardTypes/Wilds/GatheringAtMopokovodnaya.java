@@ -1,15 +1,12 @@
 package com.common.model.Cards.CardTypes.Wilds;
 
 import com.common.*;
-import com.common.model.Cards.CardTypes.Commander;
 import com.common.model.Cards.CardTypes.WildVictory;
-import com.common.model.Decks.CommanderDeck;
 import com.common.model.utils.Auction;
 
 import java.util.ArrayList;
 
 public class GatheringAtMopokovodnaya extends WildVictory {
-    private ClientController controller;
     public GatheringAtMopokovodnaya() {
         super("");
         this.message = "Высшая ставка забирает на руку весь сброс своих карт дома\n" +
@@ -24,7 +21,7 @@ public class GatheringAtMopokovodnaya extends WildVictory {
 
     @Override
     public void applyForLowestStake(Player player) {
-        CommanderDeck commanders = player.getCommaders();
+        /*CommanderDeck commanders = player.getCommaders();
 
         int minForce = 4, tForce;
         for (Commander commander : commanders.getCommanders())
@@ -41,20 +38,19 @@ public class GatheringAtMopokovodnaya extends WildVictory {
             {
                 commanders.remove(commander);
             }
-        }
+        }*/
     }
 
     @Override
     public void applyForEveryoneElse(ArrayList<Player> players) {
         for (Player player : players){
-            Commander commanderToBeRemoved = controller.getCommander(player);
-            player.getCommaders().remove(commanderToBeRemoved);
+           /* Commander commanderToBeRemoved = controller.getCommander(player);
+            player.getCommaders().remove(commanderToBeRemoved);*/
         }
     }
 
     @Override
-    public void executeOnClient(Game game, SocketManagerCommon socketManager, ClientController controller) {
-        this.controller = controller;
+    public void executeOnClient(ClientController controller, Game game) {
         Auction auction = game.getAuction();
         applyForHighestStake(auction.getHighestStake());
         applyForLowestStake(auction.getLowestStake());
@@ -62,7 +58,6 @@ public class GatheringAtMopokovodnaya extends WildVictory {
     }
 
     @Override
-    public Message executeOnServer(Game game, SocketManagerCommon socketManager) {
-        return null;
+    public void executeOnServer(Game game) {
     }
 }

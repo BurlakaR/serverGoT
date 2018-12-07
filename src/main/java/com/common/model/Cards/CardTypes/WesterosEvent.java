@@ -1,6 +1,7 @@
 package com.common.model.Cards.CardTypes;
 
 import com.common.model.Cards.Card;
+import com.common.Game;
 
 public abstract class WesterosEvent extends Card {
     private Boolean hasMammoth;

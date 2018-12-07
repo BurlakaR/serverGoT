@@ -18,13 +18,12 @@ import com.common.model.utils.ComparePlayersSword;
 import java.util.ArrayList;
 
 public class Game extends Message {
-    private static Game INSTANCE;
     private Map map;
-    private short moveNumber = 1;
-    private short currentWildForce = 0;
-    private short numberOfPlayers = 0;
+    private int moveNumber = 1;
+    private int currentWildForce = 0;
+    private static int numberOfPlayers = 0;
     private WildDeck wilds;
-    private ArrayList<Order> orders;
+    private ArrayList<Order> orders;//a list of possible orders
     private WesterosDeck FirstEventsDeck;
     private WesterosDeck SecondEventsDeck;
     private WesterosDeck ThirdEventsDeck;
@@ -33,16 +32,16 @@ public class Game extends Message {
     private ArrayList<Player> ironThrone = new ArrayList<>();
     private ArrayList<Player> valyrianSword = new ArrayList<>();
     private ArrayList<Player> raven = new ArrayList<>();
-    private Auction auction; //I really don't like it here...
+    private Auction auction = null; //I really don't like it here...
 
     public Game(){
         orders=new ArrayList<>();
         orders.add(new OrderFire(true));
         orders.add(new OrderFire(false));
         orders.add(new OrderFire(false));
-        orders.add(new OrderAtack(true,1));
-        orders.add(new OrderAtack(false, -1));
-        orders.add(new OrderAtack(false, 0));
+        orders.add(new OrderAttack(true,1));
+        orders.add(new OrderAttack(false, -1));
+        orders.add(new OrderAttack(false, 0));
         orders.add(new OrderHelp(true,1));
         orders.add(new OrderHelp(false,0));
         orders.add(new OrderHelp(false,0));
@@ -64,9 +63,9 @@ public class Game extends Message {
                 .add(new Vanguard())
                 .add(new WerewolfScout()).shuffle();
 
-        //FirstEventsDeck = new WesterosDeck();
-        //SecondEventsDeck= new WesterosDeck();
-        //SecondEventsDeck = new WesterosDeck();
+        FirstEventsDeck = new WesterosDeck();
+        SecondEventsDeck = new WesterosDeck();
+        SecondEventsDeck = new WesterosDeck();
         /*
         cards.add(new ArmyGathering());
         cards.add(new BattleOfKings());
@@ -86,11 +85,11 @@ public class Game extends Message {
     }
 
     //should be called before getting an instance
-    public void setNumberOfPlayers(short numberOfPlayers) {
+    public void setNumberOfPlayers(int numberOfPlayers) {
         if(numberOfPlayers >= 0 && numberOfPlayers <= 6)//zero is for tests
         {
-            this.numberOfPlayers = numberOfPlayers;
-            this.map = new Map(numberOfPlayers);
+            numberOfPlayers = numberOfPlayers;
+            this.map = new Map();
 
             addPlayers(numberOfPlayers);
             starRecount();
@@ -102,27 +101,12 @@ public class Game extends Message {
 
     }
 
-    public Game getInstance() throws Exception {
-        if(numberOfPlayers != 0)
-        {
-            if(INSTANCE == null)
-            {
-                INSTANCE = new Game();
-            }
-            return INSTANCE;
-        }
-        else
-        {
-            throw new Exception("Instance is not configured with number of players");
-        }
-    }
-
     public void RecountSupply()
     {
 
     }
 
-    public short getCurrentWildForce() {
+    public int getCurrentWildForce() {
         return currentWildForce;
     }
 
@@ -130,7 +114,7 @@ public class Game extends Message {
         this.currentWildForce = currentWildForce;
     }
 
-    public short getMoveNumber() {
+    public int getMoveNumber() {
         return moveNumber;
     }
 
@@ -152,8 +136,7 @@ public class Game extends Message {
 
     public void StartGame()
     {
-        //create all players here
-        //put proper units on the map nodes here
+
     }
 
     private void GameOver() {
@@ -204,10 +187,6 @@ public class Game extends Message {
             }
         }
 
-
-
-
-
         ironThrone.addAll(players);
         ironThrone.sort(new ComparePlayersIron());
         valyrianSword.addAll(players);
@@ -228,17 +207,6 @@ public class Game extends Message {
                 raven.get(j).setStarNumber((short) (raven.get(j).getStarNumber()+1));
             }
         }
-    }
-
-    //for now those two are fucking useless...
-    @Override
-    public void executeOnClient(Game game, SocketManagerCommon socketManager, ClientController controller) {
-
-    }
-
-    @Override
-    public Message executeOnServer(Game game, SocketManagerCommon socketManager) {
-        return null;
     }
 
     public Auction getAuction() {
@@ -263,5 +231,15 @@ public class Game extends Message {
 
     public ArrayList<Player> getPlayers(){
         return players;
+    }
+
+    @Override
+    public void executeOnClient(ClientController controller, Game game) {
+        //here client should renew its game object and also render it to gui
+    }
+
+    @Override
+    public void executeOnServer(Game game) {
+        //server renews its game object and sends a new version to everybody
     }
 }

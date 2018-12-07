@@ -1,16 +1,14 @@
-package com.common.model.Cards.CardTypes.Commanders.Lanisters;
+package com.common.model.GameEvents;
 
 import com.common.ClientController;
 import com.common.Game;
-import com.common.model.Cards.CardTypes.Commander;
+import com.common.Message;
 
-public class Taivin extends Commander {
-    public Taivin() {
-        super("", 4);
-    }
+//provokes user to execute his next order
+public class Turn extends Message {
     @Override
     public void executeOnClient(ClientController controller, Game game) {
-
+        //provokes client to configure and send orders for execution
     }
 
     @Override

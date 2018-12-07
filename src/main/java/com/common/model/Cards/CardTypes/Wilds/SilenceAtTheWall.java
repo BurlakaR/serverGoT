@@ -28,12 +28,11 @@ public class SilenceAtTheWall extends WildVictory {
     }
 
     @Override
-    public void executeOnClient(Game game, SocketManagerCommon socketManager, ClientController controller) {
+    public void executeOnClient(ClientController controller, Game game) {
 
     }
 
     @Override
-    public Message executeOnServer(Game game, SocketManagerCommon socketManager) {
-        return null;
+    public void executeOnServer(Game game) {
     }
 }

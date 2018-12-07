@@ -15,16 +15,24 @@ public class GameRoom {
     int number;
     int port;
     ArrayList<Socket> socketsClient = new ArrayList<>();
-    SocketManager socketManager;
+
+    public static SocketManager getSocketManager() {
+        return socketManager;
+    }
+
+    public static void setSocketManager(SocketManager socketManager) {
+        GameRoom.socketManager = socketManager;
+    }
+
+    static SocketManager socketManager;
     ServerSocket forCLient;
 
     Game game;
 
-    public GameRoom(int id, int number, int port, SocketManager socketManager) {
+    public GameRoom(int id, int number, int port) {
         this.id = id;
         this.number = number;
         this.port = port;
-        this.socketManager = socketManager;
         try {
             forCLient=new ServerSocket(port);
         } catch (IOException e) {

@@ -31,7 +31,7 @@ public class HordeAssault extends WildVictory {
     }
 
     @Override
-    public void executeOnClient(Game game, SocketManagerCommon socketManager, ClientController controller) {
+    public void executeOnClient(ClientController controller, Game game) {
         Auction auction = game.getAuction();
         applyForHighestStake(auction.getHighestStake());
         applyForLowestStake(auction.getLowestStake());
@@ -39,7 +39,6 @@ public class HordeAssault extends WildVictory {
     }
 
     @Override
-    public Message executeOnServer(Game game, SocketManagerCommon socketManager) {
-        return null;
+    public void executeOnServer(Game game) {
     }
 }

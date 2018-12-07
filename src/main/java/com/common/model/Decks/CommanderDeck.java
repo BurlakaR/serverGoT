@@ -2,8 +2,6 @@ package com.common.model.Decks;
 
 import com.common.ClientController;
 import com.common.Game;
-import com.common.Message;
-import com.common.SocketManagerCommon;
 import com.common.model.Cards.Card;
 import com.common.model.Cards.CardTypes.Commander;
 
@@ -51,12 +49,11 @@ public class CommanderDeck extends Deck {
 
     //feeling so good about it...
     @Override
-    public void executeOnClient(Game game, SocketManagerCommon socketManager, ClientController controller) {
+    public void executeOnClient(ClientController controller, Game game) {
 
     }
 
     @Override
-    public Message executeOnServer(Game game, SocketManagerCommon socketManager) {
-        return null;
+    public void executeOnServer(Game game) {
     }
 }

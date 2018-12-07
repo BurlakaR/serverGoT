@@ -2,7 +2,6 @@ package com.server.communication;
 
 import com.common.IntegerMessage;
 import com.common.Message;
-import com.common.SocketManagerCommon;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,7 @@ import java.net.Socket;
 import java.util.*;
 
 @Component
-public class SocketManager extends SocketManagerCommon{
+public class SocketManager {
     static int portCreation=9998;
     static int portConnection=9999;
     ServerSocket serverCreation;

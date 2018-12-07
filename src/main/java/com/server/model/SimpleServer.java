@@ -20,6 +20,7 @@ public class SimpleServer {
 
     @PostConstruct
     public void init() throws InterruptedException {
+        GameRoom.setSocketManager(socketManager);
         for(int i=1; i<1000;i++){
             ids.add(i);
         }
@@ -35,7 +36,7 @@ public class SimpleServer {
                 int number = buf.getMessage();
                 int id=ids.poll();
                 System.out.println("Create:"+id);
-                gameRooms.add(new GameRoom(id,number,9999+id,socketManager ));
+                gameRooms.add(new GameRoom(id,number,9999+id));
                 socketManager.send(new IntegerMessage(id), buf.getSender());
             }
         }).start();
@@ -63,7 +64,4 @@ public class SimpleServer {
             }
         }).start();
     }
-
-
-
 }

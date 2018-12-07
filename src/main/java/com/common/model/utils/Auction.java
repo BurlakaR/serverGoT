@@ -24,13 +24,12 @@ public class Auction extends Message {
     }
 
     @Override
-    public void executeOnClient(Game game, SocketManagerCommon socketManager, ClientController controller) {
+    public void executeOnClient(ClientController controller, Game game) {
 
     }
 
     @Override
-    public Message executeOnServer(Game game, SocketManagerCommon socketManager) {
+    public void executeOnServer(Game game) {
         //multiple send of Stake objects. Then convert to Stake and get ints;
-        return null;
     }
 }
