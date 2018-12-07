@@ -1,4 +1,4 @@
-package com.communication;
+package com.server.communication;
 
 import com.common.IntegerMessage;
 import com.common.Message;

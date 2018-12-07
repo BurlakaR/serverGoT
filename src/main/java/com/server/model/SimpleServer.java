@@ -1,14 +1,11 @@
 package com.server.model;
 
 import com.common.IntegerMessage;
-import com.common.Message;
 import com.server.communication.SocketManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;

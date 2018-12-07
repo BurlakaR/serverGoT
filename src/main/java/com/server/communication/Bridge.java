@@ -1,4 +1,4 @@
-package com.communication;
+package com.server.communication;
 
 import org.springframework.stereotype.Component;
 

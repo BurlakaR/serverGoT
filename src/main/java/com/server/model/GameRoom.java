@@ -1,14 +1,14 @@
 package com.server.model;
 
+import com.common.Game;
 import com.common.IntegerMessage;
-import com.common.TestCommand;
-import com.common.model.Game;
 import com.server.communication.SocketManager;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class GameRoom {
     int id;
@@ -65,9 +65,13 @@ public class GameRoom {
     public void start(){
         game = new Game();
         game.setNumberOfPlayers((short)3);
-        for(int i=0; i<socketsClient.size(); i++){
-            socketManager.send(new IntegerMessage(i), socketsClient.get(i));
-        }
+        Collections.shuffle(socketsClient);
+
         socketManager.multipleSend(game,socketsClient);
+        for(int i=0; i<socketsClient.size(); i++){
+            System.out.println(game.getPlayer(i));
+            socketManager.send(game.getPlayer(i), socketsClient.get(i));
+        }
+
     }
 }
