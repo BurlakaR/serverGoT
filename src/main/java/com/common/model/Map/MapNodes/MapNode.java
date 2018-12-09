@@ -1,18 +1,23 @@
 package com.common.model.Map.MapNodes;
 
-import com.common.*;
+import com.common.ClientController;
+import com.common.Game;
+import com.common.Player;
 import com.common.model.Orders.EmptyOrder;
 import com.common.model.Orders.Order;
 import com.common.model.Units.Squad;
-import com.common.model.utils.*;
+import com.common.model.utils.EmptyLogo;
+import com.common.model.utils.ForNode;
+import com.common.model.utils.Logo;
 
 import java.util.ArrayList;
 
 public class MapNode extends ForNode {
+    private boolean isAble=true;
     private Player owner;
     private Squad squad = new Squad();
     private Order order = new EmptyOrder();
-    private Logo logo = new EmptyLogo();
+    private Logo logo;
     private ArrayList<MapNode> neighbors = new ArrayList<MapNode>();
     private String name;
     private Boolean hasPowerCoin;
@@ -20,7 +25,7 @@ public class MapNode extends ForNode {
     public MapNode(int x, int y, int w, int h, String name) {
         super(x, y, w, h, name);
         this.name = name;
-
+        logo = new EmptyLogo();
     }
 
     public String getName() {
@@ -79,5 +84,17 @@ public class MapNode extends ForNode {
 
     public void setHasPowerCoin(Boolean hasPowerCoin) {
         this.hasPowerCoin = hasPowerCoin;
+    }
+
+    public boolean isAble() {
+        return isAble;
+    }
+
+    public void setAble(boolean able) {
+        isAble = able;
+    }
+
+    public boolean forRule() {
+        return false;
     }
 }

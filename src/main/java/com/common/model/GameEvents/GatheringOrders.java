@@ -1,6 +1,8 @@
 package com.common.model.GameEvents;
 
-import com.common.*;
+import com.common.ClientController;
+import com.common.Game;
+import com.common.Message;
 
 public class GatheringOrders extends Message {
 
