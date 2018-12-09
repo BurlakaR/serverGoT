@@ -1,7 +1,8 @@
 package com.common.model.Map;
 
-import com.common.ClientController;
+import com.common.IClientController;
 import com.common.Game;
+import com.common.ISocketManager;
 import com.common.Message;
 import com.common.model.Map.MapNodes.Land;
 import com.common.model.Map.MapNodes.MapNode;
@@ -21,12 +22,20 @@ public class Map extends Message {
 
 
     @Override
-    public void executeOnClient(ClientController controller, Game game) {
+    public void executeOnClient(IClientController controller, Game game) {
         controller.render(this);
     }
 
     @Override
-    public void executeOnServer(Game game) {
+    public void executeOnServer(Game game, ISocketManager socketManager) {
+    }
+
+    public void addOrders(Map m){
+        for(int i = 0; i < m.nodes.size(); i++){
+            if(!m.nodes.get(i).getOrder().orderIsEmpty()){
+                this.getNodes().get(i).setOrder(m.nodes.get(i).getOrder());
+            }
+        }
     }
 
     public ArrayList<MapNode> getNodes() {

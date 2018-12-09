@@ -1,7 +1,8 @@
 package com.common.model.Orders;
 
-import com.common.ClientController;
+import com.common.IClientController;
 import com.common.Game;
+import com.common.ISocketManager;
 import com.common.model.Map.MapNodes.MapNode;
 import com.common.model.utils.ForImage;
 
@@ -21,12 +22,12 @@ public abstract class Order extends ForImage {
     }
 
     @Override
-    public void executeOnClient(ClientController controller, Game game){
+    public void executeOnClient(IClientController controller, Game game){
         setUsed(true);
     }
 
     @Override
-    public void executeOnServer(Game game){
+    public void executeOnServer(Game game, ISocketManager socketManager){
         setUsed(true);
     }
 
@@ -57,4 +58,10 @@ public abstract class Order extends ForImage {
     public boolean isStar() {
         return star;
     }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public boolean orderIsEmpty(){return  false;}
 }
