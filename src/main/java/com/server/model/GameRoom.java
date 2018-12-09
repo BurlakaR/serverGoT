@@ -78,7 +78,7 @@ public class GameRoom {
         socketManager.multipleSend(game,socketsClient);
         for(int i=0; i<socketsClient.size(); i++){
             System.out.println(game.getPlayer(i));
-            socketManager.send(game.getPlayer(i), socketsClient.get(i));
+            socketManager.send(new IntegerMessage(i), socketsClient.get(i));
         }
         socketManager.multipleSend(new GatheringOrders(), socketsClient);
     }
