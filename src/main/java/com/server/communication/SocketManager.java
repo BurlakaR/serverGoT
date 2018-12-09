@@ -73,24 +73,28 @@ public class SocketManager implements ISocketManager {
     }
 
     public ArrayList<Message> mupltipleReceive(ArrayList<Socket> socketsClient){
+        final int[] mescounter = {0};
         ArrayList<Message> buf=new ArrayList<>();
         for (Socket s:
              socketsClient) {
             buf.add(new IntegerMessage(0));
         }
+        System.out.println(buf.toString());
         for(int clientcounter=0;clientcounter<socketsClient.size(); clientcounter++) {
             final int i=clientcounter;
             new Thread(()->{
-                buf.add(i-1,receive(socketsClient.get(i-1)));
+                buf.set(i,receive(socketsClient.get(i)));
+                mescounter[0]++;
             }).start();
         }
-        while(!(buf.size()==socketsClient.size())){
+        while(!(mescounter[0]==socketsClient.size())){
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         };
+        System.out.println(buf.toString());
         return buf;
     }
 
