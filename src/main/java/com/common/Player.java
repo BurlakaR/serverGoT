@@ -86,11 +86,11 @@ public class Player extends Message {
     }
 
     @Override
-    public void executeOnClient(ClientController controller, Game game) {
+    public void executeOnClient(IClientController controller, Game game) {
 
     }
 
     @Override
-    public void executeOnServer(Game game) {
+    public void executeOnServer(Game game, ISocketManager socketManager) {
     }
 }

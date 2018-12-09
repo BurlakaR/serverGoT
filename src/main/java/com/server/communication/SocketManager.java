@@ -1,5 +1,6 @@
 package com.server.communication;
 
+import com.common.ISocketManager;
 import com.common.IntegerMessage;
 import com.common.Message;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import java.net.Socket;
 import java.util.*;
 
 @Component
-public class SocketManager {
+public class SocketManager implements ISocketManager {
     static int portCreation=9998;
     static int portConnection=9999;
     ServerSocket serverCreation;

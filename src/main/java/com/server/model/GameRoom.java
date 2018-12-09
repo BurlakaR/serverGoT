@@ -2,7 +2,9 @@ package com.server.model;
 
 import com.common.Game;
 import com.common.IntegerMessage;
+import com.common.Message;
 import com.common.model.GameEvents.GatheringOrders;
+import com.common.model.Map.Map;
 import com.server.communication.SocketManager;
 
 import java.io.IOException;
@@ -81,5 +83,11 @@ public class GameRoom {
             socketManager.send(new IntegerMessage(i), socketsClient.get(i));
         }
         socketManager.multipleSend(new GatheringOrders(), socketsClient);
+        ArrayList<Message> maps = socketManager.mupltipleReceive(socketsClient);
+        for (Message m : maps){
+            game.getMap().addOrders((Map)m);
+        }
+        socketManager.multipleSend(game, socketsClient);
+
     }
 }
