@@ -1,5 +1,4 @@
 package com.common;
-
 import com.common.model.Decks.CommanderDeck;
 import com.common.model.Map.MapNodes.MapNode;
 

@@ -1,7 +1,7 @@
 package com.common.model.Units.UnitTypes;
 
-import com.common.IClientController;
 import com.common.Game;
+import com.common.IClientController;
 import com.common.ISocketManager;
 import com.common.Player;
 import com.common.model.Units.Unit;

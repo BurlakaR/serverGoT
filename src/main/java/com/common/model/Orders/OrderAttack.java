@@ -1,7 +1,7 @@
 package com.common.model.Orders;
 
-import com.common.IClientController;
 import com.common.Game;
+import com.common.IClientController;
 import com.common.ISocketManager;
 import com.common.model.Units.Squad;
 
@@ -13,6 +13,7 @@ public class OrderAttack extends Order {
         super("OrderAttack", star, power);
         if(power<0) this.setImgName(this.getImgName()+"1");
         else if(power==0) this.setImgName(this.getImgName()+"2");
+        orderType = OrderType.OrderAttack;
     }
 
     @Override

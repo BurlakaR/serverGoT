@@ -52,7 +52,6 @@ public class SocketManager implements ISocketManager {
             e.printStackTrace();
             return null;
         }
-
     }
 
 

@@ -1,7 +1,7 @@
 package com.common.model.Cards.CardTypes.Wilds;
 
-import com.common.IClientController;
 import com.common.Game;
+import com.common.IClientController;
 import com.common.ISocketManager;
 import com.common.Player;
 import com.common.model.Cards.CardTypes.WildVictory;

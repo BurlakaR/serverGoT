@@ -1,7 +1,7 @@
 package com.common.model.Cards.CardTypes.WesterosEvents;
 
-import com.common.IClientController;
 import com.common.Game;
+import com.common.IClientController;
 import com.common.ISocketManager;
 import com.common.model.Cards.CardTypes.WesterosEvent;
 

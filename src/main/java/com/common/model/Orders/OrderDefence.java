@@ -1,12 +1,13 @@
 package com.common.model.Orders;
 
-import com.common.IClientController;
 import com.common.Game;
+import com.common.IClientController;
 import com.common.ISocketManager;
 
 public class OrderDefence extends Order {
     public OrderDefence(boolean star, int power) {
         super("OrderDefence", star, power);
+        orderType = OrderType.OrderDefence;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.common.model.utils;
 
-import com.common.IClientController;
 import com.common.Game;
+import com.common.IClientController;
 import com.common.ISocketManager;
 import com.common.Message;
 
