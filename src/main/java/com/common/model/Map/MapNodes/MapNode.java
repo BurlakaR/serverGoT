@@ -7,6 +7,7 @@ import com.common.Player;
 import com.common.model.Orders.NoOrder;
 import com.common.model.Orders.Order;
 import com.common.model.Units.Squad;
+import com.common.model.Units.Unit;
 import com.common.model.utils.EmptyLogo;
 import com.common.model.utils.ForNode;
 import com.common.model.utils.Logo;
@@ -28,6 +29,15 @@ public class MapNode extends ForNode {
         super(x, y, w, h, name);
         this.name = name;
         logo = new EmptyLogo();
+    }
+
+    public void updateNodeByNode(Game game, MapNode node){
+        this.hasPowerCoin = node.hasPowerCoin;
+        this.order = node.order;
+        this.squad = node.squad;
+        for (Unit u : squad.getSquad()){
+            u.setPlayer(game.getPlayerByName(u.getPlayer().getName()));
+        }
     }
 
     public String getName() {
@@ -55,6 +65,7 @@ public class MapNode extends ForNode {
 
     public void setOrder(Order order) {
         this.order = order;
+        this.order.setSource(this);
     }
 
     public Logo getLogo() {
@@ -71,6 +82,9 @@ public class MapNode extends ForNode {
     }
 
     public boolean isFreeOrOwnedBy(Player p){
+        if(owner == null){
+            return false;
+        }
         return (owner.getName() == p.getName()) || owner == null;
     }
 

@@ -92,4 +92,5 @@ public class Player extends Message {
     @Override
     public void executeOnServer(Game game, ISocketManager socketManager) {
     }
+
 }
