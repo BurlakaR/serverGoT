@@ -10,7 +10,6 @@ public abstract class Order extends ForImage {
     //Fuck Liskov
     protected OrderType orderType;
     private boolean available;
-    private boolean used = false;
     private boolean star;
     private int power;
     protected MapNode source;
@@ -44,14 +43,6 @@ public abstract class Order extends ForImage {
 
     public void setTarget(MapNode target) {
         this.target = target;
-    }
-
-    public boolean isUsed() {
-        return used;
-    }
-
-    public void setUsed(boolean used) {
-        this.used = used;
     }
 
     public boolean isStar() {

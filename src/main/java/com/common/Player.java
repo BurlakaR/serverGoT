@@ -1,6 +1,9 @@
 package com.common;
 import com.common.model.Decks.CommanderDeck;
 import com.common.model.Map.MapNodes.MapNode;
+import com.common.model.Orders.OrderAttack;
+import com.common.model.Orders.OrderFire;
+import com.common.model.Orders.OrderRule;
 
 import java.util.ArrayList;
 
@@ -32,7 +35,7 @@ public class Player extends Message {
         return barrelSupply;
     }
 
-    public void setBarrelSupply(short barrelSupply) {
+    public void setBarrelSupply(int barrelSupply) {
         this.barrelSupply = barrelSupply;
     }
 
@@ -40,7 +43,7 @@ public class Player extends Message {
         return numberOfCastles;
     }
 
-    public void setNumberOfCastles(short numberOfCastles) {
+    public void setNumberOfCastles(int numberOfCastles) {
         this.numberOfCastles = numberOfCastles;
     }
 
@@ -48,7 +51,7 @@ public class Player extends Message {
         return ironThronePosition;
     }
 
-    public void setIronThronePosition(short ironThronePosition) {
+    public void setIronThronePosition(int ironThronePosition) {
         this.ironThronePosition = ironThronePosition;
     }
 
@@ -56,7 +59,7 @@ public class Player extends Message {
         return valyrianSwordPosition;
     }
 
-    public void setValyrianSwordPosition(short valyrianSwordPosition) {
+    public void setValyrianSwordPosition(int valyrianSwordPosition) {
         this.valyrianSwordPosition = valyrianSwordPosition;
     }
 
@@ -64,7 +67,7 @@ public class Player extends Message {
         return ravenPosition;
     }
 
-    public void setRavenPosition(short ravenPosition) {
+    public void setRavenPosition(int ravenPosition) {
         this.ravenPosition = ravenPosition;
     }
 
@@ -80,7 +83,7 @@ public class Player extends Message {
         return starNumber;
     }
 
-    public void setStarNumber(short starNumber) {
+    public void setStarNumber(int starNumber) {
         this.starNumber = starNumber;
     }
 
@@ -92,5 +95,4 @@ public class Player extends Message {
     @Override
     public void executeOnServer(Game game, ISocketManager socketManager) {
     }
-
 }

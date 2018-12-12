@@ -1,10 +1,10 @@
 package com.server.model;
 
-import com.common.Game;
-import com.common.IntegerMessage;
-import com.common.Message;
+import com.common.*;
+import com.common.model.Cards.CardTypes.WesterosEvent;
 import com.common.model.GameEvents.GatheringOrders;
 import com.common.model.Map.Map;
+import com.common.model.Orders.Order;
 import com.server.communication.SocketManager;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ public class GameRoom {
     int id;
     int number;
     int port;
-    ArrayList<Socket> socketsClient = new ArrayList<>();
+    ArrayList<Socket> socketsOfClients = new ArrayList<>();
 
     public static SocketManager getSocketManager() {
         return socketManager;
@@ -44,7 +44,7 @@ public class GameRoom {
     }
 
     public boolean add(Socket client) {
-        if(socketsClient.size()<number) {
+        if(socketsOfClients.size()<number) {
             socketManager.send(new IntegerMessage(port), client);
 
             try {
@@ -52,8 +52,8 @@ public class GameRoom {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            socketsClient.add(client);
-            if(socketsClient.size()==number){
+            socketsOfClients.add(client);
+            if(socketsOfClients.size()==number){
                 new Thread(()->{
                     start();
                 }).start();
@@ -72,22 +72,78 @@ public class GameRoom {
         return port;
     }
 
-    public void start(){
+    private void start(){
         game = new Game();
-        game.setNumberOfPlayers((short)3);
-        Collections.shuffle(socketsClient);
+        game.setNumberOfPlayers(number);
+        Collections.shuffle(socketsOfClients);
 
-        socketManager.multipleSend(game,socketsClient);
-        for(int i=0; i<socketsClient.size(); i++){
+        socketManager.multipleSend(game, socketsOfClients);
+        for(int i = 0; i< socketsOfClients.size(); i++){
             System.out.println(game.getPlayer(i));
-            socketManager.send(new IntegerMessage(i), socketsClient.get(i));
+            socketManager.send(new IntegerMessage(i), socketsOfClients.get(i));
         }
-        socketManager.multipleSend(new GatheringOrders(), socketsClient);
-        ArrayList<Message> maps = socketManager.mupltipleReceive(socketsClient);
+
+        while(true){
+            turn();
+        }
+
+    }
+
+    private void turn(){
+        game.nextMove();
+        if(game.getMoveNumber() != 1){
+            triggerEvents();
+        }
+        gatherAndSyncOrders();
+        executeOrders();
+    }
+
+    private void executeOrders(){
+        ArrayList<Player> orderedPlayers = game.getIronThrone();
+        while(game.getMap().thereAreUnusedOrders()){
+            for(Player p : orderedPlayers){
+                Socket playerSocket = getPlayersSocket(p);
+                Order nextOrder = Validator.getNextOrderForExecution(game, p);
+                if(nextOrder != null){
+                    socketManager.send(nextOrder, playerSocket);
+                    Order order = (Order)socketManager.receive(playerSocket);
+                    order.executeOnServer(game, socketManager);
+                    socketManager.multipleSend(game, socketsOfClients);
+                }
+            }
+        }
+    }
+
+    private void triggerEvents(){
+        WesterosEvent card;
+        card = game.getFirstEventsDeck().getTop();
+        card.executeOnServer(game, socketManager);
+        socketManager.multipleSend(card, socketsOfClients);
+        card = game.getSecondEventsDeck().getTop();
+        card.executeOnServer(game, socketManager);
+        socketManager.multipleSend(card, socketsOfClients);
+        card = game.getThirdEventsDeck().getTop();
+        card.executeOnServer(game, socketManager);
+        socketManager.multipleSend(card, socketsOfClients);
+    }
+
+    private void gatherAndSyncOrders(){
+        socketManager.multipleSend(new GatheringOrders(), socketsOfClients);
+        ArrayList<Message> maps = socketManager.mupltipleReceive(socketsOfClients);
         for (Message m : maps){
             game.getMap().addOrders((Map)m);
         }
-        socketManager.multipleSend(game, socketsClient);
+        socketManager.multipleSend(game, socketsOfClients);
+    }
 
+    //there would be a map instead of this pure madness
+    private Socket getPlayersSocket(Player p){
+        ArrayList<Player> players = game.getPlayers();
+        for (int i = 0; i < players.size(); i++){
+            if(players.get(i).getName().equals(p.getName())){
+                return socketsOfClients.get(i);
+            }
+        }
+        return null;
     }
 }

@@ -38,6 +38,17 @@ public class Map extends Message {
         }
     }
 
+    public boolean thereAreUnusedOrders(){
+        boolean res = false;
+        for(MapNode node : nodes){
+            OrderType ot = node.getOrder().getOrderType();
+            if(ot == OrderType.OrderFire || ot == OrderType.OrderAttack || ot == OrderType.OrderRule){
+                res = true;
+            }
+        }
+        return res;
+    }
+
     public ArrayList<MapNode> getNodes() {
         return nodes;
     }
